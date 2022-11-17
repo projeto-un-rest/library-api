@@ -3,6 +3,15 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const connection = require("./db/connection");
 
+const User = require("./model/User");
+const Address = require("./model/Address");
+const Student = require("./model/Student");
+const Teacher = require("./model/Teacher");
+const Book = require("./model/Book");
+const Load = require("./model/Loan");
+
+const BookEndPoint = require("./api/BookEndPoint");
+
 const app = express();
 
 
@@ -19,6 +28,9 @@ connection.authenticate()
     .catch(error => console.log(error))
 
 connection.sync()
+
+
+app.use("/api/book", BookEndPoint);
 
 
 app.get("/", (req, res) => {
