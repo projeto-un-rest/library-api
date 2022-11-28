@@ -8,11 +8,15 @@ const Load = connection.define("load", {
     },
     dt_devolution: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: true
+    },
+    dt_withdrawal: {
+        type: Sequelize.DATE,
+        allowNull: true
     },
     dt_receipt: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: true
     }
 
 }, { createdAt: false, updatedAt: false });

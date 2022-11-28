@@ -11,6 +11,11 @@ const Book = require("./model/Book");
 const Load = require("./model/Loan");
 
 const BookEndPoint = require("./api/BookEndPoint");
+const StudentEndPoint = require("./api/StudentEndPoint");
+const TeacherEndPoint = require("./api/TeacherEndPoint");
+const UserEndPoint = require("./api/UserEndPoint");
+const LoanEndPoint = require("./api/LoanEndPoint");
+const AddressEndPoint = require("./api/AddressEndPoint");
 
 const app = express();
 
@@ -31,6 +36,11 @@ connection.sync()
 
 
 app.use("/api/book", BookEndPoint);
+app.use("/api/student", StudentEndPoint);
+app.use("/api/teacher", TeacherEndPoint);
+app.use("/api/user", UserEndPoint);
+app.use("/api/loan", LoanEndPoint);
+app.use("/api/address", AddressEndPoint);
 
 
 app.get("/", (req, res) => {

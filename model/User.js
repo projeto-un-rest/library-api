@@ -13,6 +13,10 @@ const User = connection.define("user", {
         allowNull: false,
         unique: true
     },
+    password: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     name: {
         type: Sequelize.STRING(100),
         allowNull: false
@@ -42,7 +46,17 @@ Student.belongsTo(User, {
     foreignKey: "id_user"
 });
 
+User.hasOne(Student, {
+    constraint: true,
+    foreignKey: "id_user"
+});
+
 Teacher.belongsTo(User, {
+    constraint: true,
+    foreignKey: "id_user"
+});
+
+User.hasOne(Teacher, {
     constraint: true,
     foreignKey: "id_user"
 });
@@ -58,6 +72,11 @@ Load.belongsTo(Book, {
 });
 
 Load.belongsTo(User, {
+    constraint: true,
+    foreignKey: "id_user"
+});
+
+User.hasMany(Load, {
     constraint: true,
     foreignKey: "id_user"
 });
