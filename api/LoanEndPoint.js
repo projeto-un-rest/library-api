@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 const Loan = require("../model/Loan");
 const User = require("../model/User");
+const Book = require("../model/Book");
 
 const verifyToken = require("../middlewares/verifyToken");
 
@@ -11,7 +12,10 @@ router.get("/:userId", async (req, res) => {
     try {
         const response = await User.findByPk(userId, {
             attributes: ["id", "cpf", "name", "rg", "email", "phone", "createdAt"],
-            include: Loan
+            include: {
+                model: Loan,
+                include: [Book]
+            }
         });
         
         const dateNow = new Date();
@@ -25,9 +29,6 @@ router.get("/:userId", async (req, res) => {
 
             } else if(load.dt_receipt != null) {
                 load.status = "Entregue";
-
-            } else if(new Date(load.dt_devolution).getDate() === dateNow.getDate()) {
-                load.status = "Entrega Hoje";
 
             } else if(new Date(load.dt_devolution) < dateNow) {
                 load.status = "Atrasado";
@@ -75,7 +76,7 @@ router.post("/withdrawal/:loanId", async (req, res) => {
         const dateNow = new Date();
 
         const dateWithdrawal = dateNow.toISOString();
-        const dateDevolution = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate() + 3).toISOString();
+        const dateDevolution = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate() + 3, 23, 59).toISOString();
 
         await Loan.update({
             dt_withdrawal: dateWithdrawal,
@@ -99,12 +100,9 @@ router.post("/renovate/:loanId", async (req, res) => {
 
         if(dateDevolution < dateNow) {
             res.status(409).json({ error: "Não é possível renovar um empréstimo atrasado" });
-
-        } else if((loan.dt_devolution - dateNow) > 3) {
-            res.status(409).json({ error: "Não é possível renovar faltando 3 ou mais dias para a devolução" });
         }
 
-        const newDateDevolution = new Date(dateDevolution.getFullYear(), dateDevolution.getMonth(), dateDevolution.getDate() + 3).toISOString();
+        const newDateDevolution = new Date(dateDevolution.getFullYear(), dateDevolution.getMonth(), dateDevolution.getDate() + 3, 23, 59).toISOString();
 
         await Loan.update({ dt_devolution: newDateDevolution }, { where: { id: loanId } });
         res.status(200).end();

@@ -44,6 +44,16 @@ router.get("/", async (req, res) => {
     } catch { res.status(500).end() }
 });
 
+router.get("/:id", async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const book = await Book.findOne({ where: { id: id } });
+        res.status(200).json(book);
+
+    } catch { res.status(500).end() }
+});
+
 router.post("/", async (req, res) => {
     const { title, publisher, edition, authors, subject, launch, copies } = req.body;
 
